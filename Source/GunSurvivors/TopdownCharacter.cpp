@@ -142,6 +142,29 @@ void ATopdownCharacter::MoveCompleted(const FInputActionValue& Value)
 
 void ATopdownCharacter::Shoot(const FInputActionValue& Value)
 {
+	if (bCanShoot)
+	{
+		bCanShoot = false;
+
+		// Spawn bullet actor
+		ABullet* Bullet = GetWorld()->SpawnActor<ABullet>(BulletActorToSpawn, BulletSpawnPosition->GetComponentLocation(), FRotator(0.0f, 0.0f, 0.0f));
+		check(Bullet); //check used only for development purposes
+
+		APlayerController* PlayerController = Cast<APlayerController>(Controller);
+		check(PlayerController);
+		FVector MouseWorldLocation, MouseWorldDirection;
+		PlayerController->DeprojectMousePositionToWorld(MouseWorldLocation, MouseWorldDirection);
+
+		// Start calculate directions/positions
+		FVector CurrentLocation = GetActorLocation();
+		FVector2D BulletDirection = FVector2D(MouseWorldDirection.X - CurrentLocation.X, MouseWorldDirection.Z - CurrentLocation.Z);
+		BulletDirection.Normalize();
+
+		// Launch the bullet
+		Bullet->Launch(BulletDirection, 200.0f);
+
+		GetWorldTimerManager().SetTimer(ShootCDTimer, this, &ATopdownCharacter::OnShootCDTimerTimeout, 1.0f, false, ShootCDDurationSec);
+	}
 }
 
 bool ATopdownCharacter::IsInMapBoundsHorizontal(float xPos)
@@ -152,5 +175,10 @@ bool ATopdownCharacter::IsInMapBoundsHorizontal(float xPos)
 bool ATopdownCharacter::IsInMapBoundsVertical(float zPos)
 {
 	return (zPos > VerticalLimits.X && zPos < VerticalLimits.Y);
+}
+
+void ATopdownCharacter::OnShootCDTimerTimeout()
+{
+	bCanShoot = true;
 }
 

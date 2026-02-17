@@ -12,6 +12,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include "InputActionValue.h"
+#include "Engine/TimerHandle.h"
+#include "Bullet.h"
 #include "TopdownCharacter.generated.h"
 
 UCLASS()
@@ -53,6 +55,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D VerticalLimits;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ABullet> BulletActorToSpawn;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputAction* MoveAction;
 
@@ -65,6 +70,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bCanMove = true;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bCanShoot = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ShootCDDurationSec = 0.3f;
+
+	FTimerHandle ShootCDTimer;
+		
 	// Sets default values for this pawn's properties
 	ATopdownCharacter();
 
@@ -83,4 +96,6 @@ public:
 
 	bool IsInMapBoundsHorizontal(float xPos);
 	bool IsInMapBoundsVertical(float zPos);
+
+	void OnShootCDTimerTimeout();
 };

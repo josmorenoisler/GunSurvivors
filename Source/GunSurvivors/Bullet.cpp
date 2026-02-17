@@ -9,16 +9,13 @@ ABullet::ABullet()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	if (IsLaunch())
-	{
-		SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
-		SetRootComponent(SphereComp);
+	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
+	SetRootComponent(SphereComp);
 
-		BulletSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("BulletSprite"));
-		BulletSprite->SetupAttachment(RootComponent);
+	BulletSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("BulletSprite"));
+	BulletSprite->SetupAttachment(RootComponent);
 
-		MovementDirection = FVector2D(1.0f, 0.0f);
-	}
+	MovementDirection = FVector2D(1.0f, 0.0f);
 	
 }
 
@@ -52,9 +49,13 @@ void ABullet::Launch(FVector2D Direction, float Speed)
 
 	MovementDirection = Direction;
 	MovementSpeed = Speed;
+
+	float DeleteTime = 10.0f;
+	GetWorldTimerManager().SetTimer(LifeSpanTimer, this, &ABullet::OnDeleteTimerTimeout, 1.0f, false, DeleteTime);
 }
 
 void ABullet::OnDeleteTimerTimeout()
 {
+	Destroy();
 }
 
