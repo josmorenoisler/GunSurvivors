@@ -157,11 +157,12 @@ void ATopdownCharacter::Shoot(const FInputActionValue& Value)
 
 		// Start calculate directions/positions
 		FVector CurrentLocation = GetActorLocation();
-		FVector2D BulletDirection = FVector2D(MouseWorldDirection.X - CurrentLocation.X, MouseWorldDirection.Z - CurrentLocation.Z);
+		FVector2D BulletDirection = FVector2D(MouseWorldLocation.X - CurrentLocation.X, MouseWorldLocation.Z - CurrentLocation.Z);
 		BulletDirection.Normalize();
 
 		// Launch the bullet
-		Bullet->Launch(BulletDirection, 200.0f);
+		float BulletSpeed = 200.0f;
+		Bullet->Launch(BulletDirection, BulletSpeed);
 
 		GetWorldTimerManager().SetTimer(ShootCDTimer, this, &ATopdownCharacter::OnShootCDTimerTimeout, 1.0f, false, ShootCDDurationSec);
 	}
