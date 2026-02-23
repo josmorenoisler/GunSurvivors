@@ -16,6 +16,9 @@
 #include "Bullet.h"
 #include "TopdownCharacter.generated.h"
 
+#define UNIT_VECTOR			FVector(1.0f, 1.0f, 1.0f)
+#define UNIT_VECTOR_MINUSX	FVector(-1.0f, 1.0f, 1.0f)
+
 UCLASS()
 class GUNSURVIVORS_API ATopdownCharacter : public APawn
 {

@@ -24,6 +24,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	ATopdownCharacter* Player;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bIsAlive = true;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bCanFollow = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MovSpeed = 60.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StopDistance = 25.0f;
+
 	// Sets default values for this actor's properties
 	AEnemy();
 

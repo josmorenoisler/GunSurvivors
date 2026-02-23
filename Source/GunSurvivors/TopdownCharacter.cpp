@@ -124,11 +124,11 @@ void ATopdownCharacter::MoveTriggered(const FInputActionValue& Value)
 		FVector FlipbookScale = CharacterFlipbook->GetComponentScale();
 		if (MovementDirection.X < 0.0f && FlipbookScale.X > 0.0f)
 		{
-			CharacterFlipbook->SetWorldScale3D(FVector(-1.0f, 1.0f, 1.0f));
+			CharacterFlipbook->SetWorldScale3D(UNIT_VECTOR_MINUSX);
 		}
 		if (MovementDirection.X > 0.0f && FlipbookScale.X < 0.0f)
 		{
-			CharacterFlipbook->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
+			CharacterFlipbook->SetWorldScale3D(UNIT_VECTOR);
 		}
 
 	}
