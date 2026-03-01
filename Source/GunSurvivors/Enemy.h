@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "PaperFlipbookComponent.h"
 #include "TopdownCharacter.h"
+#include "Engine/TimerHandle.h"
 #include "Enemy.generated.h"
 
 UCLASS()
@@ -20,6 +21,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UPaperFlipbookComponent* EnemyFlipbook;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperFlipbook* EnemyDeadFlipbook;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	ATopdownCharacter* Player;
@@ -36,6 +40,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float StopDistance = 25.0f;
 
+	FTimerHandle DestroyTimer;
+
+	bool IsEnemyAlive();
+
 	// Sets default values for this actor's properties
 	AEnemy();
 
@@ -44,5 +52,9 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void Die();
+
+	void OnDestroyTimerTimeout();
 
 };

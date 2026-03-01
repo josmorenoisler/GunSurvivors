@@ -30,6 +30,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bIsLaunched = false;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bIsDisabled = false;
+
 	FTimerHandle LifeSpanTimer;
 
 	// Sets default values for this actor's properties
@@ -44,4 +47,9 @@ public:
 	void Launch(FVector2D Direction, float Speed);
 	
 	void OnDeleteTimerTimeout();
+
+	UFUNCTION()
+	void OverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyINdex, bool bFromSweep, const FHitResult& SweepResult);
+
+	void DisableBullet();
 };

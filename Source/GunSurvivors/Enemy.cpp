@@ -39,13 +39,13 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bIsAlive && bCanFollow && Player)
+	if (IsEnemyAlive() && bCanFollow && Player)
 	{
 		// Enemy Movement towards player
 		FVector CurrLoc = GetActorLocation();
 		FVector PlayerLoc = Player->GetActorLocation();
 
-		FVector PlayerDirection = PlayerLoc - GetActorLocation();
+		FVector PlayerDirection = PlayerLoc - CurrLoc;
 		float DistToPlayer = PlayerDirection.Length();
 
 		if (DistToPlayer >= StopDistance)
@@ -74,5 +74,32 @@ void AEnemy::Tick(float DeltaTime)
 			}
 		}
 	}
+}
+
+void AEnemy::Die()
+{
+	if (!IsEnemyAlive())
+	{
+		return;
+	}
+
+	bIsAlive = false;
+	bCanFollow = false;
+
+	EnemyFlipbook->SetFlipbook(EnemyDeadFlipbook);
+	EnemyFlipbook->SetTranslucentSortPriority(-5);
+
+	float TTD = 10.0f;
+	GetWorldTimerManager().SetTimer(DestroyTimer, this, &AEnemy::OnDestroyTimerTimeout, 1.0f, false, TTD);
+}
+
+void AEnemy::OnDestroyTimerTimeout()
+{
+	Destroy();
+}
+
+bool AEnemy::IsEnemyAlive()
+{
+	return bIsAlive;
 }
 
