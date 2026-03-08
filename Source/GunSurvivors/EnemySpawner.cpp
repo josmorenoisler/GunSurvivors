@@ -2,6 +2,7 @@
 
 
 #include "EnemySpawner.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -16,6 +17,12 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	AActor* PlayerActor = UGameplayStatics::GetActorOfClass(GetWorld(), ATopdownCharacter::StaticClass());
+	if (PlayerActor)
+	{
+		Player = Cast<ATopdownCharacter>(PlayerActor);
+	}
+
 	StartSpawn();
 }
 
@@ -26,9 +33,18 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 }
 
+void AEnemySpawner::EnemySetup(AEnemy* Enemy)
+{
+	if (Enemy)
+	{
+		Enemy->Player = Player;
+		Enemy->bCanFollow = true;
+	}
+}
+
 void AEnemySpawner::StartSpawn()
 {
-	GetWorldTimerManager().SetTimer(SpawnTimer, this, &AEnemySpawner::OnSpawnTimerTimeout, SpawnTime, false, SpawnTime);
+	GetWorldTimerManager().SetTimer(SpawnTimer, this, &AEnemySpawner::OnSpawnTimerTimeout, SpawnTime, true, SpawnTime);
 }
 
 void AEnemySpawner::StopSpawn()
@@ -43,5 +59,31 @@ void AEnemySpawner::OnSpawnTimerTimeout()
 
 void AEnemySpawner::SpawnEnemy()
 {
-	AEnemy* Enemy = GetWorld()->SpawnActor<AEnemy>(EnemyActorToSpawn, GetActorLocation(), FRotator::ZeroRotator);
+	// Enemy Spawner
+	FVector2D RndmPos = FVector2d(FMath::VRand());
+	RndmPos.Normalize();
+	RndmPos *= SpawnDistance;
+
+	FVector EnemyLoc = GetActorLocation() + FVector(RndmPos.X, 0.0f, RndmPos.Y);
+
+	AEnemy* Enemy = GetWorld()->SpawnActor<AEnemy>(EnemyActorToSpawn, EnemyLoc, FRotator::ZeroRotator);
+
+	EnemySetup(Enemy);
+
+	// Difficulty System
+	TotalEnemyCount += 1;
+	if (TotalEnemyCount % DifficultySpikeInterval == 0)
+	{
+		if (SpawnTime > SpawnTimeMinimumLimit)
+		{
+			SpawnTime -= DecreaseDiffSpawnByInterval;
+			if (SpawnTime < SpawnTimeMinimumLimit)
+			{
+				SpawnTime = SpawnTimeMinimumLimit;
+			}
+
+			StopSpawn();
+			StartSpawn();
+		}
+	}
 }

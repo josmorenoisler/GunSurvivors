@@ -21,17 +21,6 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (!Player)
-	{
-		AActor* PlayerActor = UGameplayStatics::GetActorOfClass(GetWorld(), ATopdownCharacter::StaticClass());
-
-		if (PlayerActor)
-		{
-			Player = Cast<ATopdownCharacter>(PlayerActor);
-			bCanFollow = true;
-		}
-	}
 }
 
 // Called every frame
