@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "Engine/TimerHandle.h"
 #include "TopdownCharacter.h"
+#include "GunSurvivorsGameMode.h"
 #include "EnemySpawner.generated.h"
 
 UCLASS()
@@ -40,6 +41,8 @@ public:
 
 	FTimerHandle SpawnTimer;
 
+	AGunSurvivorsGameMode* MyGameMode;
+
 	// Sets default values for this actor's properties
 	AEnemySpawner();
 
@@ -53,4 +56,7 @@ public:
 	void StartSpawn();
 	void StopSpawn();
 	void SpawnEnemy();
+
+	UFUNCTION()
+	void OnEnemyDied();
 };

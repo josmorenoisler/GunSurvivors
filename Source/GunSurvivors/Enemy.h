@@ -10,6 +10,8 @@
 #include "Engine/TimerHandle.h"
 #include "Enemy.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEnemyDiedDelegate);
+
 UCLASS()
 class GUNSURVIVORS_API AEnemy : public AActor
 {
@@ -42,7 +44,7 @@ public:
 
 	FTimerHandle DestroyTimer;
 
-	bool IsEnemyAlive();
+	FEnemyDiedDelegate EnemyDiedDelegate;
 
 	// Sets default values for this actor's properties
 	AEnemy();

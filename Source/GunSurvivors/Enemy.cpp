@@ -28,7 +28,7 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsEnemyAlive() && bCanFollow && Player)
+	if (bIsAlive && bCanFollow && Player)
 	{
 		// Enemy Movement towards player
 		FVector CurrLoc = GetActorLocation();
@@ -48,7 +48,7 @@ void AEnemy::Tick(float DeltaTime)
 		CurrLoc = GetActorLocation();
 		float FlipbookXScale = EnemyFlipbook->GetComponentScale().X;
 
-		if ((PlayerLoc.X - CurrLoc.X) >= 0.0f) // PLayer is on the right side of the enemy
+		if ((PlayerLoc.X - CurrLoc.X) >= 0.0f) // Player is on the right side of the enemy
 		{
 			if (FlipbookXScale < 0.0f)
 			{
@@ -67,7 +67,7 @@ void AEnemy::Tick(float DeltaTime)
 
 void AEnemy::Die()
 {
-	if (!IsEnemyAlive())
+	if (!bIsAlive)
 	{
 		return;
 	}
@@ -78,6 +78,8 @@ void AEnemy::Die()
 	EnemyFlipbook->SetFlipbook(EnemyDeadFlipbook);
 	EnemyFlipbook->SetTranslucentSortPriority(-5);
 
+	EnemyDiedDelegate.Broadcast();
+
 	float TTD = 10.0f;
 	GetWorldTimerManager().SetTimer(DestroyTimer, this, &AEnemy::OnDestroyTimerTimeout, 1.0f, false, TTD);
 }
@@ -87,8 +89,4 @@ void AEnemy::OnDestroyTimerTimeout()
 	Destroy();
 }
 
-bool AEnemy::IsEnemyAlive()
-{
-	return bIsAlive;
-}
 
