@@ -28,6 +28,7 @@ void AEnemySpawner::BeginPlay()
 	if (PlayerActor)
 	{
 		Player = Cast<ATopdownCharacter>(PlayerActor);
+		Player->PlayerDiedDelegate.AddDynamic(this, &AEnemySpawner::OnPlayerDied);
 	}
 
 	StartSpawn();
@@ -98,5 +99,27 @@ void AEnemySpawner::SpawnEnemy()
 
 void AEnemySpawner::OnEnemyDied()
 {
-	// call to MyGameMode and update the score
+	int ScoreToAdd = 10;
+
+	MyGameMode->AddScore(ScoreToAdd);
+}
+
+void AEnemySpawner::OnPlayerDied()
+{
+	StopSpawn();
+
+	TArray<AActor*> EnemyActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy::StaticClass(), EnemyActors);
+
+	for (AActor* enemyActor : EnemyActors)
+	{
+		AEnemy* enemy = Cast<AEnemy>(enemyActor);
+
+		if (enemy && enemy->bIsAlive)
+		{
+			enemy->bCanFollow = false;
+		}
+	}
+
+	MyGameMode->RestartGame();
 }

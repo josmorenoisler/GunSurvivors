@@ -8,6 +8,7 @@
 #include "PaperFlipbookComponent.h"
 #include "TopdownCharacter.h"
 #include "Engine/TimerHandle.h"
+#include "Sound/SoundBase.h"
 #include "Enemy.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEnemyDiedDelegate);
@@ -29,6 +30,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	ATopdownCharacter* Player;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	USoundBase* DieSound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bIsAlive = true;

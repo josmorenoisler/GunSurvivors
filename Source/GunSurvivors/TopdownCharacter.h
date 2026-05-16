@@ -13,11 +13,14 @@
 #include "Components/InputComponent.h"
 #include "InputActionValue.h"
 #include "Engine/TimerHandle.h"
+#include "Sound/SoundBase.h"
 #include "Bullet.h"
 #include "TopdownCharacter.generated.h"
 
 #define UNIT_VECTOR			FVector(1.0f, 1.0f, 1.0f)
 #define UNIT_VECTOR_MINUSX	FVector(-1.0f, 1.0f, 1.0f)
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDiedDelegate);
 
 UCLASS()
 class GUNSURVIVORS_API ATopdownCharacter : public APawn
@@ -42,6 +45,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UPaperFlipbook* RunFlipbook;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	USoundBase* BulletShootSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	USoundBase* DieSound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USceneComponent* GunParent;
@@ -76,10 +85,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bCanShoot = true;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bIsAlive = true;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ShootCDDurationSec = 0.3f;
 
 	FTimerHandle ShootCDTimer;
+
+	FPlayerDiedDelegate PlayerDiedDelegate;
 		
 	// Sets default values for this pawn's properties
 	ATopdownCharacter();
@@ -101,4 +115,7 @@ public:
 	bool IsInMapBoundsVertical(float zPos);
 
 	void OnShootCDTimerTimeout();
+
+	UFUNCTION()
+	void OverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyINdex, bool bFromSweep, const FHitResult& SweepResult);
 };

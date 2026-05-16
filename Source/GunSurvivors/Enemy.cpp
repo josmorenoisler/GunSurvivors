@@ -80,6 +80,8 @@ void AEnemy::Die()
 
 	EnemyDiedDelegate.Broadcast();
 
+	UGameplayStatics::PlaySound2D(GetWorld(), DieSound);
+
 	float TTD = 10.0f;
 	GetWorldTimerManager().SetTimer(DestroyTimer, this, &AEnemy::OnDestroyTimerTimeout, 1.0f, false, TTD);
 }
